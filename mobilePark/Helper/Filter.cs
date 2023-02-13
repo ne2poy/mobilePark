@@ -31,7 +31,6 @@ namespace mobilePark.Helper
 
 		public static double RunningAverage(double newVal, double filVal)
 		{
-			// var fil = filVal.SensorValue != null ? filVal.SensorValue : 0;
 			var filter = (newVal - filVal) * k;
 			return newVal + filter;
 		}
