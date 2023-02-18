@@ -24,6 +24,7 @@ namespace mobilePark.Services
 			await SaveData(meteoData);
 
 			var filteredSensorData = Filter.FilteringDataNoise(meteoData);
+			Filter.AddMeteoData(meteoData);
 
 			var filteredMeteoData = new MeteoDataDbModel()
 			{

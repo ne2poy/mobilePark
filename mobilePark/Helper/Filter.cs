@@ -19,6 +19,14 @@ namespace mobilePark.Helper
 			return 0;
 		}
 
+		public static void AddMeteoData(MeteoDataDbModel meteoData)
+		{
+			if (!lastMeteoDataDictionary.ContainsKey(meteoData.EmulatorID))
+			{
+				lastMeteoDataDictionary.Add(meteoData.EmulatorID, meteoData);
+			}
+		}
+
 		public static List<SensorData> FilteringDataNoise(MeteoDataDbModel meteoData)
 		{
 			return meteoData.SensorData.Select(x => new SensorData()
