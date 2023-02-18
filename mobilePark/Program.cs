@@ -16,7 +16,6 @@ string connection = builder.Configuration.GetConnectionString("DefaultConnection
 builder.Services.AddDbContext<MeteoDbContext>(options => options.UseSqlServer(connection));
 
 builder.Services.AddTransient<MeteoService>();
-builder.Services.AddSingleton<FilterService>();
 
 var app = builder.Build();
 

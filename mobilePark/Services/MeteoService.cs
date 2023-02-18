@@ -9,13 +9,11 @@ namespace mobilePark.Services
 	{
 		private readonly ILogger<MainApiController> logger;
 		private readonly MeteoDbContext dbContext;
-		private readonly FilterService filterService;
 
-		public MeteoService(ILogger<MainApiController> logger, MeteoDbContext dbContext, FilterService filterService)
+		public MeteoService(ILogger<MainApiController> logger, MeteoDbContext dbContext)
 		{
 			this.logger = logger;
 			this.dbContext = dbContext;
-			this.filterService = filterService;
 		}
 
 		public async Task SaveNoiseData(MeteoDataDbModel meteoData)
