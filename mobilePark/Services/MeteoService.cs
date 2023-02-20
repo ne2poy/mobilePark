@@ -46,33 +46,28 @@ namespace mobilePark.Services
 
 		public async Task<IEnumerable<StatisticsModel>> GetStatistics()
 		{
-			var packages = await dbContext.MeteoDataPackages
-				.ToArrayAsync();
-
-			return packages.GroupBy(x => x.EmulatorID).Select(m => new StatisticsModel 
+			return await dbContext.MeteoDataPackages.GroupBy(x => x.EmulatorID).Select(m => new StatisticsModel
 			{
 				MeteoStation = m.Key,
 				PackageCount = m.Select(p => p.DataPackageID).Distinct().LongCount()
-			});
+			})
+			.ToListAsync();
 		}
 
 		public async Task<IEnumerable<CsvModel>> GetCsvByMeteoEmulator(string emulatorId, string sensorName)
 		{
-			var packages = await dbContext.MeteoDataPackages
+            var res = await dbContext.MeteoDataPackages
 				.Include(x => x.SensorData)
 				.Where(x => x.EmulatorID == emulatorId)
-				.ToArrayAsync();
-
-			var res = packages.GroupBy(x => x.DataPackageID).Select(m => 
-			{
-				return new CsvModel()
+				.GroupBy(x => x.DataPackageID)
+				.Select(m => new CsvModel()
 				{
 					DataPackageID = m.Key,
-					SrcSensorValue = m.FirstOrDefault(s => s.DataType == DataTypeEnum.src)?.SensorData.FirstOrDefault(x => x.SensorName == sensorName)?.SensorValue,
-					NoiseSensorValue = m.FirstOrDefault(s => s.DataType == DataTypeEnum.noise)?.SensorData.FirstOrDefault(x => x.SensorName == sensorName)?.SensorValue,
-					FilteredSensorValue = m.FirstOrDefault(s => s.DataType == DataTypeEnum.filtered)?.SensorData.FirstOrDefault(x => x.SensorName == sensorName)?.SensorValue,
-				};
-			}).ToList();
+					SrcSensorValue = m.First(s => s.DataType == DataTypeEnum.src).SensorData.First(x => x.SensorName == sensorName).SensorValue,
+					NoiseSensorValue = m.First(s => s.DataType == DataTypeEnum.noise).SensorData.First(x => x.SensorName == sensorName).SensorValue,
+					FilteredSensorValue = m.First(s => s.DataType == DataTypeEnum.filtered).SensorData.First(x => x.SensorName == sensorName).SensorValue,
+				})
+				.ToListAsync();
 
 			return res;
 		}
